@@ -5,3 +5,4 @@ Concept notes that support the diagrams in this repository.
 ## Available guides
 
 - [Reusable NuGet packages](reusable-nuget-packages.md) — options for consuming NuGet packages from Git or artifact feeds.
+- [GitHub Copilot Agent for QEs](github-copilot-agent-for-qe.md) — comprehensive guide for using GitHub Copilot Agent mode in QA workflows.
