@@ -119,7 +119,58 @@ When writing a bug report, pointing to the exact element is helpful.
 
 ---
 
-## Part 5: Cheat Sheet
+## Part 5: 20 More Ways to Supercharge Your Testing
+
+Beyond the basics, here are 20 practical scenarios where Playwright can be your superpower.
+
+### 🏗️ Data & State Management
+1.  **Bulk User Creation:** Record a script to sign up a new user. Run it in a loop (e.g., `for (let i=0; i<10; i++)`) to create 10 test users in seconds.
+2.  **Clean Slate Testing:** Create a "teardown" script that deletes all the items you created during your session, resetting the environment for the next round.
+3.  **Role Switching:** Create separate setup scripts for `Admin`, `Editor`, and `Viewer`. Run one to instantly jump into that persona without manually logging out and back in.
+4.  **Complex Form Filling:** For forms with 50+ fields (like insurance apps), record filling it once. Re-run it whenever you need to test the "Submit" button logic.
+5.  **Cookie Injection:** Instead of logging in via UI, use a script to inject a valid authentication cookie to bypass the login screen entirely.
+
+### 🎨 UI & Visuals
+6.  **Responsive Check:** Set the viewport size in your script (`page.setViewportSize({ width: 375, height: 667 })`) to instantly see how the page looks on a mobile screen.
+7.  **Dark Mode Verification:** Force the browser into dark mode (`colorScheme: 'dark'`) to verify styles without changing your OS settings.
+8.  **Full Page Screenshots:** Use `await page.screenshot({ path: 'full.png', fullPage: true });` to capture an entire scrolling page—perfect for design reviews.
+9.  **Text Localization:** Script a flow that switches languages and takes a screenshot of the header, helping you spot layout breaks in German or French.
+10. **Element Visibility:** Use the Inspector to check if an element is technically "visible" or just hidden by CSS (invaluable for "I can't click it" bugs).
+
+### ⚡ Workflow Accelerators
+11. **Pagination Jumping:** Need to test page 50 of a list? Script clicking "Next" 49 times so you don't have to.
+12. **Cart Loading:** Script adding 1 of every product type to the cart to test the "Checkout" summary calculation.
+13. **Deep Linking:** If your app doesn't support direct URLs to modals, write a script to navigate and open the specific modal you need to test.
+14. **Email Verification:** Automate the "Request Password Reset" action so you can focus solely on the email delivery and link behavior.
+15. **Search Permutations:** Create a list of 20 search terms (including SQL injection strings) and loop through them, taking a screenshot of the results for each.
+
+### 🧪 Edge Cases & Stress
+16. **Network Throttling:** Use Playwright to simulate "Slow 3G" network conditions while you manually interact with the page to test loading states.
+17. **Offline Mode:** Simulate going offline (`context.setOffline(true)`) to see how the app handles a lost connection during a form submission.
+18. **Time Travel:** Override the browser's timezone or geolocation to test how the app behaves in Tokyo or London without using a VPN.
+19. **Console Log Monitoring:** Run a test that listens for console errors and fails if any red text appears—catching invisible JavaScript crashes.
+20. **Rapid Clicking:** Write a loop to click a "Submit" button 10 times in 1 second to test for race conditions or duplicate submissions.
+
+---
+
+## Part 6: ROI - Time Savings Analysis
+
+How much time does this actually save? Here is a breakdown of common tasks performed by Exploratory QEs.
+
+| Task Category | Manual Execution Time | Playwright Execution Time | Time Saved (Per Run) |
+| :--- | :--- | :--- | :--- |
+| **Login & Navigate** | 45 sec | 5 sec | **40 sec** |
+| **Fill Long Form** | 3 min | 15 sec | **~2.5 min** |
+| **Create 10 Users** | 15 min | 1 min | **14 min** |
+| **Cross-Browser Check** (3 browsers) | 12 min | 45 sec | **11+ min** |
+| **Reset Environment** | 5 min | 30 sec | **4.5 min** |
+| **Regression Smoke Test** | 60 min | 5 min | **55 min** |
+
+*Imagine running these tasks 5 times a day. You could save over **an hour daily** just by automating the setup and repetitive parts!*
+
+---
+
+## Part 7: Cheat Sheet
 
 Here are the commands you will use most often. Run these in the VS Code Terminal.
 
