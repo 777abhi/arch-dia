@@ -10,3 +10,4 @@ Concept notes that support the diagrams in this repository.
 - [QE Custom Agents Library](qe-custom-agents-library.md) — a collection of ready-to-use custom agent personas for Quality Engineers.
 - [Building DORA Metrics](dora-metrics-ado-typescript.md) — step-by-step guide to calculating DORA metrics using Azure DevOps Node.js API and TypeScript.
 - [Playwright for Exploratory QEs](playwright-for-exploratory-testing.md) — comprehensive guide for manual testers to use Playwright tools.
+- [Engineering Productivity and Happiness](engineering-productivity-and-happiness.md) — a guide to rediscovering the joy of coding through automation, AI, and healthy metrics.
