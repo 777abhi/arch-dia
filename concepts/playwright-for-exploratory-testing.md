@@ -4,6 +4,22 @@ This guide is designed for **Manual and Exploratory Quality Engineers** who want
 
 ---
 
+## 💰 The ROI: Why You Should Care
+
+Before we dive in, let's look at the time you can save. Imagine running these common tasks just **5 times a day**:
+
+| Task Category | Manual Time | Playwright Time | Time Saved (Per Run) | **Annual Savings** (approx.) |
+| :--- | :--- | :--- | :--- | :--- |
+| **Login & Navigate** | 45 sec | 5 sec | **40 sec** | ⏲️ **16 hours/year** |
+| **Fill Long Form** | 3 min | 15 sec | **~2.5 min** | ⏲️ **50 hours/year** |
+| **Create 10 Users** | 15 min | 1 min | **14 min** | ⏲️ **280 hours/year** |
+| **Cross-Browser Check** | 12 min | 45 sec | **11+ min** | ⏲️ **220 hours/year** |
+| **Regression Smoke** | 60 min | 5 min | **55 min** | ⏲️ **1,100 hours/year** |
+
+*By automating just the "boring stuff", you could free up weeks of time every year for high-value exploratory testing!*
+
+---
+
 ## Why Playwright for Manual Testing?
 
 You might think Playwright is just for automation engineers, but it has features that are incredibly useful for manual testing:
@@ -124,53 +140,121 @@ When writing a bug report, pointing to the exact element is helpful.
 Beyond the basics, here are 20 practical scenarios where Playwright can be your superpower.
 
 ### 🏗️ Data & State Management
-1.  **Bulk User Creation:** Record a script to sign up a new user. Run it in a loop (e.g., `for (let i=0; i<10; i++)`) to create 10 test users in seconds.
+1.  **Bulk User Creation:** Record a script to sign up a new user. Run it in a loop to create 10 test users in seconds.
+    ```typescript
+    // Create 10 users in a loop
+    for (let i = 0; i < 10; i++) {
+      await page.goto('https://example.com/signup');
+      await page.fill('#username', `testuser_${i}`);
+      await page.fill('#password', 'password123');
+      await page.click('#submit');
+    }
+    ```
 2.  **Clean Slate Testing:** Create a "teardown" script that deletes all the items you created during your session, resetting the environment for the next round.
-3.  **Role Switching:** Create separate setup scripts for `Admin`, `Editor`, and `Viewer`. Run one to instantly jump into that persona without manually logging out and back in.
+3.  **Role Switching:** Create separate setup scripts for `Admin`, `Editor`, and `Viewer`. Run one to instantly jump into that persona.
+    ```typescript
+    // setup-admin.ts
+    await page.goto('https://example.com/login');
+    await page.fill('#user', 'admin');
+    await page.fill('#pass', 'adminPass');
+    await page.click('#login-btn');
+    await page.context().storageState({ path: 'admin-auth.json' });
+    ```
 4.  **Complex Form Filling:** For forms with 50+ fields (like insurance apps), record filling it once. Re-run it whenever you need to test the "Submit" button logic.
 5.  **Cookie Injection:** Instead of logging in via UI, use a script to inject a valid authentication cookie to bypass the login screen entirely.
+    ```typescript
+    await context.addCookies([{
+      name: 'session_id',
+      value: '123456abcdef',
+      domain: 'example.com',
+      path: '/'
+    }]);
+    await page.reload();
+    ```
 
 ### 🎨 UI & Visuals
-6.  **Responsive Check:** Set the viewport size in your script (`page.setViewportSize({ width: 375, height: 667 })`) to instantly see how the page looks on a mobile screen.
-7.  **Dark Mode Verification:** Force the browser into dark mode (`colorScheme: 'dark'`) to verify styles without changing your OS settings.
-8.  **Full Page Screenshots:** Use `await page.screenshot({ path: 'full.png', fullPage: true });` to capture an entire scrolling page—perfect for design reviews.
+6.  **Responsive Check:** Set the viewport size in your script to instantly see how the page looks on a mobile screen.
+    ```typescript
+    // Simulate iPhone 12
+    await page.setViewportSize({ width: 390, height: 844 });
+    ```
+7.  **Dark Mode Verification:** Force the browser into dark mode to verify styles without changing your OS settings.
+    ```typescript
+    await page.emulateMedia({ colorScheme: 'dark' });
+    ```
+8.  **Full Page Screenshots:** Capture an entire scrolling page—perfect for design reviews.
+    ```typescript
+    await page.screenshot({ path: 'full-page.png', fullPage: true });
+    ```
 9.  **Text Localization:** Script a flow that switches languages and takes a screenshot of the header, helping you spot layout breaks in German or French.
-10. **Element Visibility:** Use the Inspector to check if an element is technically "visible" or just hidden by CSS (invaluable for "I can't click it" bugs).
+10. **Element Visibility:** Use the Inspector to check if an element is technically "visible" or just hidden by CSS.
+    ```typescript
+    const isVisible = await page.isVisible('#hidden-button');
+    console.log(`Is button visible? ${isVisible}`);
+    ```
 
 ### ⚡ Workflow Accelerators
 11. **Pagination Jumping:** Need to test page 50 of a list? Script clicking "Next" 49 times so you don't have to.
+    ```typescript
+    for (let i = 0; i < 49; i++) {
+      await page.click('.next-page-btn');
+      await page.waitForLoadState('networkidle');
+    }
+    ```
 12. **Cart Loading:** Script adding 1 of every product type to the cart to test the "Checkout" summary calculation.
 13. **Deep Linking:** If your app doesn't support direct URLs to modals, write a script to navigate and open the specific modal you need to test.
 14. **Email Verification:** Automate the "Request Password Reset" action so you can focus solely on the email delivery and link behavior.
-15. **Search Permutations:** Create a list of 20 search terms (including SQL injection strings) and loop through them, taking a screenshot of the results for each.
+15. **Search Permutations:** Create a list of 20 search terms and loop through them, taking a screenshot of the results for each.
+    ```typescript
+    const terms = ['apple', 'banana', '<script>alert(1)</script>'];
+    for (const term of terms) {
+      await page.fill('#search', term);
+      await page.press('#search', 'Enter');
+      await page.screenshot({ path: `search-${term}.png` });
+    }
+    ```
 
 ### 🧪 Edge Cases & Stress
 16. **Network Throttling:** Use Playwright to simulate "Slow 3G" network conditions while you manually interact with the page to test loading states.
-17. **Offline Mode:** Simulate going offline (`context.setOffline(true)`) to see how the app handles a lost connection during a form submission.
+    ```typescript
+    // Connect to Chrome DevTools Protocol
+    const client = await page.context().newCDPSession(page);
+    await client.send('Network.emulateNetworkConditions', {
+      offline: false,
+      latency: 500, // ms
+      downloadThroughput: 500 * 1024 / 8, // 500 kbps
+      uploadThroughput: 500 * 1024 / 8,
+    });
+    ```
+17. **Offline Mode:** Simulate going offline to see how the app handles a lost connection during a form submission.
+    ```typescript
+    await context.setOffline(true);
+    // Try clicking submit now
+    await page.click('#submit');
+    ```
 18. **Time Travel:** Override the browser's timezone or geolocation to test how the app behaves in Tokyo or London without using a VPN.
-19. **Console Log Monitoring:** Run a test that listens for console errors and fails if any red text appears—catching invisible JavaScript crashes.
+    ```typescript
+    await context.grantPermissions(['geolocation']);
+    await context.setGeolocation({ latitude: 35.6895, longitude: 139.6917 }); // Tokyo
+    await page.emulateTimezone('Asia/Tokyo');
+    ```
+19. **Console Log Monitoring:** Run a test that listens for console errors and fails if any red text appears.
+    ```typescript
+    page.on('console', msg => {
+      if (msg.type() === 'error')
+        console.log(`Error text: "${msg.text()}"`);
+    });
+    ```
 20. **Rapid Clicking:** Write a loop to click a "Submit" button 10 times in 1 second to test for race conditions or duplicate submissions.
+    ```typescript
+    for (let i = 0; i < 10; i++) {
+      page.click('#submit-btn'); // No await means "fire and forget" (fast!)
+    }
+    ```
 
 ---
 
-## Part 6: ROI - Time Savings Analysis
-
-How much time does this actually save? Here is a breakdown of common tasks performed by Exploratory QEs.
-
-| Task Category | Manual Execution Time | Playwright Execution Time | Time Saved (Per Run) |
-| :--- | :--- | :--- | :--- |
-| **Login & Navigate** | 45 sec | 5 sec | **40 sec** |
-| **Fill Long Form** | 3 min | 15 sec | **~2.5 min** |
-| **Create 10 Users** | 15 min | 1 min | **14 min** |
-| **Cross-Browser Check** (3 browsers) | 12 min | 45 sec | **11+ min** |
-| **Reset Environment** | 5 min | 30 sec | **4.5 min** |
-| **Regression Smoke Test** | 60 min | 5 min | **55 min** |
-
-*Imagine running these tasks 5 times a day. You could save over **an hour daily** just by automating the setup and repetitive parts!*
-
----
-
-## Part 7: Cheat Sheet
+## Part 6: Cheat Sheet
 
 Here are the commands you will use most often. Run these in the VS Code Terminal.
 
