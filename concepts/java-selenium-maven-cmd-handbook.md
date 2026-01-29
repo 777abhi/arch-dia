@@ -9,7 +9,23 @@ This handbook serves as a technical reference for executing and managing a Java-
 Ensure the Java Development Kit (JDK) 11+ and Apache Maven are correctly installed and configured.
 
 ### Java (JDK 11+)
-Verify installation:
+
+**Installation via CLI:**
+
+*   **Windows (Winget):**
+    ```powershell
+    winget install -e --id EclipseTemurin.JDK.11
+    ```
+*   **macOS (Homebrew):**
+    ```bash
+    brew install openjdk@11
+    ```
+*   **Linux (Debian/Ubuntu):**
+    ```bash
+    sudo apt-get update && sudo apt-get install openjdk-11-jdk -y
+    ```
+
+**Verify Installation:**
 ```bash
 java -version
 ```
@@ -17,20 +33,44 @@ java -version
 **Setting JAVA_HOME (Permanent)**
 
 *   **Windows (PowerShell Admin):**
+    *Note: Update the path below to match your installation location (e.g., 'C:\Program Files\Eclipse Adoptium\jdk-11...').*
     ```powershell
-    [System.Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\Program Files\Java\jdk-11", "Machine")
+    [System.Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\Path\To\JDK-11", "Machine")
     [System.Environment]::SetEnvironmentVariable("Path", $env:Path + ";%JAVA_HOME%\bin", "Machine")
     ```
 
-*   **macOS / Linux (Bash/Zsh):**
+*   **macOS (Zsh):**
     ```bash
     echo 'export JAVA_HOME=$(/usr/libexec/java_home -v 11)' >> ~/.zshrc
-    echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.zshrc
     source ~/.zshrc
     ```
 
+*   **Linux (Bash):**
+    ```bash
+    # Dynamically find the path or use /usr/lib/jvm/java-11-openjdk-amd64
+    echo 'export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))' >> ~/.bashrc
+    echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.bashrc
+    source ~/.bashrc
+    ```
+
 ### Apache Maven
-Verify installation:
+
+**Installation via CLI:**
+
+*   **Windows (Winget):**
+    ```powershell
+    winget install -e --id Apache.Maven
+    ```
+*   **macOS (Homebrew):**
+    ```bash
+    brew install maven
+    ```
+*   **Linux (Debian/Ubuntu):**
+    ```bash
+    sudo apt-get install maven -y
+    ```
+
+**Verify Installation:**
 ```bash
 mvn -version
 ```
@@ -38,16 +78,25 @@ mvn -version
 **Setting MAVEN_HOME (Permanent)**
 
 *   **Windows (PowerShell Admin):**
+    *Note: Winget typically handles the PATH. Set MAVEN_HOME if required by other tools.*
     ```powershell
-    [System.Environment]::SetEnvironmentVariable("MAVEN_HOME", "C:\Apache\maven", "Machine")
+    [System.Environment]::SetEnvironmentVariable("MAVEN_HOME", "C:\Path\To\Maven", "Machine")
     [System.Environment]::SetEnvironmentVariable("Path", $env:Path + ";%MAVEN_HOME%\bin", "Machine")
     ```
 
-*   **macOS / Linux:**
+*   **macOS (Zsh):**
+    *Note: Homebrew manages the PATH automatically.*
     ```bash
-    echo 'export MAVEN_HOME=/opt/apache-maven' >> ~/.zshrc
-    echo 'export PATH=$MAVEN_HOME/bin:$PATH' >> ~/.zshrc
+    # Optional: If MAVEN_HOME is specifically required
+    echo 'export MAVEN_HOME=$(brew --prefix maven)' >> ~/.zshrc
     source ~/.zshrc
+    ```
+
+*   **Linux (Bash):**
+    ```bash
+    echo 'export MAVEN_HOME=/usr/share/maven' >> ~/.bashrc
+    echo 'export PATH=$MAVEN_HOME/bin:$PATH' >> ~/.bashrc
+    source ~/.bashrc
     ```
 
 ---
