@@ -11,3 +11,4 @@ Concept notes that support the diagrams in this repository.
 - [Building DORA Metrics](dora-metrics-ado-typescript.md) — step-by-step guide to calculating DORA metrics using Azure DevOps Node.js API and TypeScript.
 - [Playwright for Exploratory QEs](playwright-for-exploratory-testing.md) — comprehensive guide for manual testers to use Playwright tools.
 - [Engineering Productivity and Happiness](engineering-productivity-and-happiness.md) — a guide to rediscovering the joy of coding through automation, AI, and healthy metrics.
+- [Advanced Prompting for QE Code Gen](advanced-prompting-for-qe-code-gen.md) — a comprehensive guide for effective code generation and prompting within Quality Engineering.
